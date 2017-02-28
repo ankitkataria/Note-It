@@ -2,7 +2,34 @@
 <?php
 	include ("./config.php");
 	include ("Console/Getopt.php");
+
+	
 	$conn=new mysqli($server,$user,$pass);
+	if($conn->select_db('notes')==true)
+		$conn->query("use notes;");
+
+	function note_exists($name,$conn)
+	{
+		//$c=new mysqli($server,$user,$pass,$db);
+		$sql1="select * from note_list;";
+		//if($conn->query($sql1))
+		//	fwrite(STDOUT,"query done");
+		$result=$conn->query($sql1);
+		//fwrite(STDOUT,$result);
+		if($result->num_rows>0)
+		{
+			while($row=$result->fetch_assoc()){
+				if($row['title']==$name)
+					{
+						return true;
+					}
+			}
+
+
+		}
+		return false;
+	}
+
 	$q="";
 	$tq="";
 	$cg=new Console_Getopt();
@@ -45,8 +72,6 @@
 								else 
 									fwrite(STDERR,"table not created \n");
 
-
-
 							}
 							else 
 								fwrite(STDOUT,"database already exists. Start adding new notes \n");
@@ -69,16 +94,48 @@
 								fwrite(STDERR,"Problem Deleting database. \n");
 						}
 						break;
-				case 'c':;
+				case 'c': $test=1;
 				case '--create-note':
-
+						if($test==1)
+							$tmp_1=1;
+						else 
+							$tmp_1=0;
+						if($conn->select_db('notes'))
+						{
+							$tmp_n=explode("=",$o[1]);
+							//print_r($tmp_n);
+							$note_name=$tmp_n[$tmp_1];
+							if(!note_exists($note_name,$conn))
+							{
+								$date=date("Y-m-d h:i:s");
+								$q="insert into note_list(title,created,updated,content) values('".$note_name."','$date','$date','title:$note_name');";
+									//fwrite(STDOUT,$q);
+								if($conn->query($q))
+									fwrite(STDOUT,'Note successfully created. Starting adding notes into in using:'."\n".'--create-note="note_name" --note="random stuff" '."\n");
+								else
+									fwrite(STDERR,"note not created. \n");
+							}
+							else
+								fwrite(STDOUT,"The note already exists. \n");
+						}
+						else
+							fwrite(STDOUT,"The database doesn't exist. Create one using: \n --new-user/-C \n");
 						break;
 			    case  'n': ;
 			    case '--note':
+			    		$tmp=0;
 			    		foreach($opts as $opt)
 			    		{
 			    			if($opt[0]=='c'||$opt[0]=="--create-note")
-			    				
+			    			{
+			    				$tmp=1;break;
+			    			}
+			    		}
+			    		if($tmp==0)
+			    			fwrite(STDOUT,"please specify a note name using -c/--create-note='note-name' \n");
+			    		else
+			    		{
+			    			
 			    		}
 
 			    		break;
