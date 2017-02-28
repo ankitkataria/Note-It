@@ -29,7 +29,8 @@
 		}
 		return false;
 	}
-
+	
+	$test="";$test2="";
 	$q="";
 	$tq="";
 	$cg=new Console_Getopt();
@@ -102,13 +103,15 @@
 							$tmp_1=0;
 						if($conn->select_db('notes'))
 						{
+
 							$tmp_n=explode("=",$o[1]);
 							//print_r($tmp_n);
 							$note_name=$tmp_n[$tmp_1];
+							//fwrite(STDOUT,"the note name".$note_name);
 							if(!note_exists($note_name,$conn))
 							{
 								$date=date("Y-m-d h:i:s");
-								$q="insert into note_list(title,created,updated,content) values('".$note_name."','$date','$date','title:$note_name');";
+								$q="insert into note_list(title,created,updated,content) values('".$note_name."','$date','$date','title:$note_name;');";
 									//fwrite(STDOUT,$q);
 								if($conn->query($q))
 									fwrite(STDOUT,'Note successfully created. Starting adding notes into in using:'."\n".'--create-note="note_name" --note="random stuff" '."\n");
@@ -121,24 +124,45 @@
 						else
 							fwrite(STDOUT,"The database doesn't exist. Create one using: \n --new-user/-C \n");
 						break;
-			    case  'n': ;
+			    case  'n': $test2=1;
 			    case '--note':
+					    if($test2==1)
+							$tmp_2=1;
+						else 
+							$tmp_2=0;
+
 			    		$tmp=0;
 			    		foreach($opts as $opt)
 			    		{
 			    			if($opt[0]=='c'||$opt[0]=="--create-note")
 			    			{
-			    				$tmp=1;break;
+			    				$tmp=1;
+								break;
 			    			}
 			    		}
 			    		if($tmp==0)
 			    			fwrite(STDOUT,"please specify a note name using -c/--create-note='note-name' \n");
 			    		else
 			    		{
-			    			
+			    			$tmp_c=explode("=",$o[1]);
+							//print_r($tmp_n);
+							$note_content=$tmp_c[$tmp_2];
+							$note_content=$note_content.";";
+			    			fwrite(STDOUT,"Writing to the note \n");
+			    			if(note_exists($note_name,$conn))
+			    			{
+			    				$q="update note_list set content=concat(content,'$note_content') where title='$note_name';";
+			    				if($conn->query($q))
+			    					fwrite(STDOUT,"Note successfully added. \n");
+			    				else 
+			    					fwrite(STDERR,"Could not create note.");
+			    			}
 			    		}
 
 			    		break;
+
+			        
+
 			}
 		}
 	}
