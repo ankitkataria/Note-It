@@ -30,7 +30,7 @@
 		return false;
 	}
 	
-	$test="";$test2="";
+	$test="";$test2="";$test3="";
 	$q="";
 	$tq="";
 	$cg=new Console_Getopt();
@@ -124,7 +124,7 @@
 						else
 							fwrite(STDOUT,"The database doesn't exist. Create one using: \n --new-user/-C \n");
 						break;
-			    case  'n': $test2=1;
+			    case 'n': $test2=1;
 			    case '--note':
 					    if($test2==1)
 							$tmp_2=1;
@@ -160,8 +160,37 @@
 			    		}
 
 			    		break;
+			    case 'd': $test3=1;
+			    case '--delete-note':
+			    		if($test3==1)
+							$tmp_3=1;
+						else 
+							$tmp_3=0;
 
-			        
+						$tmp_name=explode("=",$o[1]);
+							//print_r($tmp_n);
+						$note_tmp_name=$tmp_name[$tmp_3];
+
+						if(note_exists($note_tmp_name,$conn))
+						{
+							$q="delete from note_list where title='$note_tmp_name'";
+							if($conn->query($q))
+								fwrite(STDOUT,"The note is deleted \n");
+							else 
+								fwrite(STDERR,"error deleting note");
+						}
+						else
+							fwrite(STDOUT,"No such Note exists \n");
+
+
+
+
+
+			    		break;
+			    
+
+
+
 
 			}
 		}
