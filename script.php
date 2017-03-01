@@ -30,7 +30,7 @@
 		return false;
 	}
 	
-	$test="";$test2="";$test3="";
+	$test="";$test2="";$test3="";$test4="";
 	$q="";
 	$tq="";
 	$cg=new Console_Getopt();
@@ -151,7 +151,8 @@
 			    			fwrite(STDOUT,"Writing to the note \n");
 			    			if(note_exists($note_name,$conn))
 			    			{
-			    				$q="update note_list set content=concat(content,'$note_content') where title='$note_name';";
+			    				$date=date("Y-m-d h:i:s");
+			    				$q="update note_list set content=concat(content,'$note_content'),updated='$date' where title='$note_name';";
 			    				if($conn->query($q))
 			    					fwrite(STDOUT,"Note successfully added. \n");
 			    				else 
@@ -182,15 +183,67 @@
 						else
 							fwrite(STDOUT,"No such Note exists \n");
 
-
-
-
-
 			    		break;
 			    
+			    case 'l':
+			    case '--note-list':
+			    		$q="select title from note_list";
+			    		$result=$conn->query($q);
+			    		if($result->num_rows>0)
+			    		{
+			    			fwrite(STDOUT,"The notes saved in the database are: \n");
+			    			while($row=$result->fetch_assoc())
+			    			{
+			    				fwrite(STDOUT,$row['title']."\n");
+			    			}
+			    		}
+			    		else
+			    		{
+			    			fwrite(STDOUT,"No notes exists.");
+			    		}
 
+			    		break;
+			    case 's':$test4=1;
+			    case '--show-note':
+			    		if($test4==1)
+							$tmp_4=1;
+						else 
+							$tmp_4=0;
+						$tmp_name2=explode("=",$o[1]);
+							//print_r($tmp_n);
+						$note_tmp_name2=$tmp_name2[$tmp_4];
+						if(note_exists($note_tmp_name2,$conn))
+						{
+							$q="select * from note_list where title='$note_tmp_name2'";
+							$result=$conn->query($q);
+							if($result->num_rows>0)
+							{
+								while($row=$result->fetch_assoc())
+								{
+									$t=$row['title'];
+									$c=$row['content'];
+									$d=$row['created'];
+									$u=$row['updated'];
+									$ca=explode(";",$c);
+									//print_r($ca);
+									$i=0;
+									for($i=0;$i<sizeof($ca)-1;$i++)
+									{	
+										if($i==0)
+											fwrite(STDOUT,$ca[$i]."\n");
+										else
+										{	
+											fwrite(STDOUT,"$i . $ca[$i].\n");
+										}
+									}
+									fwrite(STDOUT,"created on: $d \nupdated on: $u \n");
+								}
+							}
+						}
+						else
+							fwrite(STDOUT,"The note doesn't exists")
 
-
+			    		break;
 
 			}
 		}
