@@ -9,7 +9,11 @@ A basic note making script written in php.
 
 ## Direction of Use:
 
-Clone repo in the required directory. Install the above mentioned requirement. Open config.sample.php and enter in it the server, username, and password for mysql.Run the following command to create the database for notes -
+Clone repo in the required directory. Install the above mentioned requirement. Open config.sample.php and enter in it the server, username, and password for mysql.Make the script executable:
+
+'chmod +x ./script.php'
+
+Run the following command to create the database for notes -
 
 `./script.php --create-db`
 
