@@ -241,7 +241,7 @@
 							}
 						}
 						else
-							fwrite(STDOUT,"The note doesn't exists")
+							fwrite(STDOUT,"The note doesn't exists");
 
 			    		break;
 
