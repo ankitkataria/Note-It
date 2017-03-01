@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-	include ("./config.php");
+	include ("./config.sample.php");
 	include ("Console/Getopt.php");
 
 	
