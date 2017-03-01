@@ -11,7 +11,7 @@ A basic note making script written in php.
 
 Clone repo in the required directory. Install the above mentioned requirement. Open config.sample.php and enter in it the server, username, and password for mysql.Make the script executable:
 
-'chmod +x ./script.php'
+`chmod +x ./script.php`
 
 Run the following command to create the database for notes -
 
